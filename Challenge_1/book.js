@@ -1,16 +1,20 @@
 import { books, authors, genres, BOOKS_PER_PAGE } from "./data.js";
 
-function createPreviewElement({ author, id, image, title }) {
+class Book {
+  constructor ({ author, id, image, title }) {
+    this.author = author;
+    this.id = id;
+    this.image = image;
+    this.title = title;
+}
+
+static createPreviewElement({book}) {
   const element = document.createElement("button");
   element.classList = "preview";
-  element.setAttribute("data-preview", id);
+  element.setAttribute("data-preview", book.id);
 
   element.innerHTML = `
-        <img
-            class="preview__image"
-            src="${image}"
-        />
-        
+        <img class="preview__image"src="${image}" />
         <div class="preview__info">
             <h3 class="preview__title">${title}</h3>
             <div class="preview__author">${authors[author]}</div>
@@ -18,8 +22,9 @@ function createPreviewElement({ author, id, image, title }) {
     `;
 
   return element;
+  }
 }
-export { createPreviewElement };
+export default Book;
 
 function themeChanger(event) {
   event.preventDefault();

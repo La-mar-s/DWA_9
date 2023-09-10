@@ -1,7 +1,7 @@
 // Fully working scripts.js file
 
 import { books, authors, genres, BOOKS_PER_PAGE } from "./data.js";
-import { createPreviewElement, themeChanger, dataList } from "./book.js";
+import { book, themeChanger, dataList } from "./book.js";
 
 let page = 1;
 let matches = books;
