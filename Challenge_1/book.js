@@ -1,19 +1,12 @@
 import { books, authors, genres, BOOKS_PER_PAGE } from "./data.js";
 
-class Book {
-  constructor ({ author, id, image, title }) {
-    this.author = author;
-    this.id = id;
-    this.image = image;
-    this.title = title;
-}
+class BookPreview {
+  static createPreviewElement({ author, id, image, title }) {
+    const element = document.createElement("button");
+    element.classList = "preview";
+    element.setAttribute("data-preview", id);
 
-static createPreviewElement({book}) {
-  const element = document.createElement("button");
-  element.classList = "preview";
-  element.setAttribute("data-preview", book.id);
-
-  element.innerHTML = `
+    element.innerHTML = `
         <img class="preview__image"src="${image}" />
         <div class="preview__info">
             <h3 class="preview__title">${title}</h3>
@@ -21,60 +14,63 @@ static createPreviewElement({book}) {
         </div>
     `;
 
-  return element;
+    return element;
   }
 }
-export default Book;
 
-function themeChanger(event) {
-  event.preventDefault();
-  const formData = new FormData(event.target);
-  const { theme } = Object.fromEntries(formData);
+class ThemeChanger {
+  static changeTheme(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const { theme } = Object.fromEntries(formData);
 
-  if (theme === "night") {
-    document.documentElement.style.setProperty("--color-dark", "255, 255, 255");
-    document.documentElement.style.setProperty("--color-light", "10, 10, 20");
-  } else {
-    document.documentElement.style.setProperty("--color-dark", "10, 10, 20");
-    document.documentElement.style.setProperty(
-      "--color-light",
-      "255, 255, 255"
-    );
+    if (theme === "night") {
+      document.documentElement.style.setProperty("--color-dark", "255, 255, 255");
+      document.documentElement.style.setProperty("--color-light", "10, 10, 20");
+    } else {
+      document.documentElement.style.setProperty("--color-dark", "10, 10, 20");
+      document.documentElement.style.setProperty(
+        "--color-light",
+        "255, 255, 255"
+      );
+    }
+
+    document.querySelector("[data-settings-overlay]").open = false;
   }
-
-  document.querySelector("[data-settings-overlay]").open = false;
 }
+  
+class DataListHandler {
+  static dataList(event) {
+    const pathArray = Array.from(event.path || event.composedPath());
+    let active = null;
 
-export { themeChanger };
+    for (const node of pathArray) {
+      if (active) break;
 
-function dataList(event) {
-  const pathArray = Array.from(event.path || event.composedPath());
-  let active = null;
+      if (node?.dataset?.preview) {
+        let result = null;
 
-  for (const node of pathArray) {
-    if (active) break;
+        for (const singleBook of books) {
+          if (result) break;
+          if (singleBook.id === node?.dataset?.preview) result = singleBook;
+        }
 
-    if (node?.dataset?.preview) {
-      let result = null;
-
-      for (const singleBook of books) {
-        if (result) break;
-        if (singleBook.id === node?.dataset?.preview) result = singleBook;
+        active = result;
       }
-
-      active = result;
-    }
-    if (active) {
-      document.querySelector("[data-list-active]").open = true;
-      document.querySelector("[data-list-blur]").src = active.image;
-      document.querySelector("[data-list-image]").src = active.image;
-      document.querySelector("[data-list-title]").innerText = active.title;
-      document.querySelector("[data-list-subtitle]").innerText = `${
-        authors[active.author]
-      } (${new Date(active.published).getFullYear()})`;
-      document.querySelector("[data-list-description]").innerText =
-        active.description;
+      if (active) {
+        document.querySelector("[data-list-active]").open = true;
+        document.querySelector("[data-list-blur]").src = active.image;
+        document.querySelector("[data-list-image]").src = active.image;
+        document.querySelector("[data-list-title]").innerText = active.title;
+        document.querySelector("[data-list-subtitle]").innerText = `${
+          authors[active.author]
+        } (${new Date(active.published).getFullYear()})`;
+        document.querySelector("[data-list-description]").innerText =
+          active.description;
+      }
     }
   }
-}
-export { dataList };
+  };
+
+  
+export { BookPreview, ThemeChanger, DataListHandler };

@@ -1,7 +1,7 @@
 // Fully working scripts.js file
 
 import { books, authors, genres, BOOKS_PER_PAGE } from "./data.js";
-import { book, themeChanger, dataList } from "./book.js";
+import { BookPreview, ThemeChanger, DataListHandler } from "./book.js";
 
 let page = 1;
 let matches = books;
@@ -13,7 +13,7 @@ const starting = document.createDocumentFragment();
 const startingFragment = document.createDocumentFragment();
 
 for (const book of matches.slice(0, BOOKS_PER_PAGE)) {
-  const element = createPreviewElement(book);
+  const element = BookPreview.createPreviewElement(book);
   startingFragment.appendChild(element);
 }
 
@@ -106,8 +106,9 @@ document.querySelector("[data-list-close]").addEventListener("click", () => {
 
 document
   .querySelector("[data-settings-form]")
-  .addEventListener("submit", themeChanger);
-
+  .addEventListener("submit",  (event) => {
+  ThemeChanger.changeTheme(event);
+  });
 //try abstraction
 
 document
@@ -190,4 +191,6 @@ document.querySelector("[data-list-button]").addEventListener("click", () => {
 
 // did encapsilation here
 
-document.querySelector("[data-list-items]").addEventListener("click", dataList);
+document.querySelector("[data-list-items]").addEventListener("click", (event) => {
+  DataListHandler.processDataList(event);
+});
