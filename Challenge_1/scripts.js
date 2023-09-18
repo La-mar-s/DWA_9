@@ -106,8 +106,13 @@ document.querySelector("[data-list-close]").addEventListener("click", () => {
 
 document
   .querySelector("[data-settings-form]")
-  .addEventListener("submit",  (event) => {
-  ThemeChanger.changeTheme(event);
+  .addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const { theme } = Object.fromEntries(formData);
+
+    ThemeChanger.changeTheme(theme);
+    document.querySelector("[data-settings-overlay]").open = false;
   });
 //try abstraction
 
@@ -191,6 +196,9 @@ document.querySelector("[data-list-button]").addEventListener("click", () => {
 
 // did encapsilation here
 
-document.querySelector("[data-list-items]").addEventListener("click", (event) => {
-  DataListHandler.processDataList(event);
-});
+document
+  .querySelector("[data-list-items]")
+  .addEventListener("click", (event) => {
+    const pathArray = Array.from(event.path || event.composedPath());
+    DataListHandler.dataList(pathArray, matches);
+  });
